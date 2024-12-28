@@ -6,5 +6,5 @@ export default async function Home() {
 
   console.log("user: ", user);
 
-  return <div>Welcome {user.given_name}</div>;
+  return <div>Welcome {user?.given_name}</div>;
 }
