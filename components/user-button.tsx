@@ -13,8 +13,6 @@ import {
 const UserButton = async () => {
   const userInfo = await getUser();
 
-  console.log("userInfo: ", userInfo);
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
