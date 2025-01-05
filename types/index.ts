@@ -1,6 +1,19 @@
 export type User = {
   id: number;
-  name: string;
-  age: number;
-  email: string;
+  username: string;
+  email: string | null;
+  password: string;
+  age: number | null;
+  picture: string | null;
+  githubId: number | null;
+  createdAt: Date;
+  updatedAt: Date;
 };
+
+type AgeStoreState = { userInfo: User | null };
+
+type AgeStoreActions = {
+  setUserInfo: (userInfo: AgeStoreState["userInfo"]) => void;
+};
+
+export type AgeStore = AgeStoreState & AgeStoreActions;
