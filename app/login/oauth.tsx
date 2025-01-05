@@ -12,7 +12,9 @@ const Oauth = () => {
       </Button> */}
       <Button className="w-full" variant="outline">
         <Github />
-        <Link href={"/login/github"}>Sign in with Github</Link>
+        <Link href={"/login/github"} prefetch={false}>
+          Sign in with Github
+        </Link>
       </Button>
     </>
   );

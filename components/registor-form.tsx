@@ -1,12 +1,12 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { register } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,8 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import request from "@/lib/request";
-import useAppStore from "@/store";
+import { User } from "@/types";
 
 const formSchema = z.object({
   username: z.string().min(2).max(20),
@@ -28,9 +27,6 @@ const formSchema = z.object({
 });
 
 const RegistorForm = () => {
-  const setUserInfo = useAppStore((state) => state.setUserInfo);
-  const router = useRouter();
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -52,15 +48,12 @@ const RegistorForm = () => {
       return;
     }
     setLoading(true);
-    const res = await request.post("/auth/register", {
+    await register({
       username: values.username,
       email: values.email,
       password: values.password,
-    });
+    } as User);
     setLoading(false);
-    console.log(res);
-    setUserInfo(res.data);
-    router.push("/home");
   }
 
   return (
