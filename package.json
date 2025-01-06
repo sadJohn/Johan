@@ -7,7 +7,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier app/ components/ --write"
+    "format": "prettier --write --ignore-unknown .",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint .",
+      "pnpm format"
+    ]
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -42,6 +49,8 @@
     "eslint-config-next": "^15.1.3",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-check-file": "^2.8.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.3.0",
     "postcss": "^8.4.49",
     "prettier": "3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.9",
