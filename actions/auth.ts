@@ -58,16 +58,22 @@ export const getUser = async () => {
 
 export const logout = async () => {
   const session = (await cookies()).get(JOHAN_AUTH_SESSION);
-  await fetch(`${BASE_URL}/auth/logout?sessionId=${session?.value}`).then(
-    (res) => res.json()
-  );
-  (await cookies()).set(JOHAN_AUTH_SESSION, "", {
-    httpOnly: true,
-    path: "/",
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 0,
-  });
+  try {
+    const res = await fetch(
+      `${BASE_URL}/auth/logout?sessionId=${session?.value}`
+    );
+    if (res.ok) {
+      (await cookies()).set(JOHAN_AUTH_SESSION, "", {
+        httpOnly: true,
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 0,
+      });
+    }
+  } catch (error) {
+    console.log("logout: ", error);
+  }
 };
 
 export const oauthLogin = async (user: User & { mode: AUTH_MODE }) => {
