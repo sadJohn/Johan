@@ -75,8 +75,8 @@ const LoginForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={loading}>
-          Submit
+        <Button className="w-full" type="submit" disabled={loading}>
+          Login
         </Button>
       </form>
     </Form>

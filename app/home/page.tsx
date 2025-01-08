@@ -1,5 +1,10 @@
-import UserButton from "@/components/user-button";
+import Link from "next/link";
 
 export default async function Home() {
-  return <UserButton />;
+  return (
+    <div>
+      <div>HOME PAGE</div>
+      <Link href={"/chat"}>CHAT PAGE</Link>
+    </div>
+  );
 }

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import NavBar from "@/components/nav/nav-bar";
+import Provider from "@/components/provider";
 import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
@@ -11,11 +13,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  modal,
 }: Readonly<{
   children: React.ReactNode;
+  modal: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link
           rel="icon"
@@ -23,8 +27,12 @@ export default function RootLayout({
         />
       </head>
       <body>
-        {children}
-        <Toaster />
+        <Provider>
+          <NavBar />
+          {children}
+          {modal}
+          <Toaster />
+        </Provider>
       </body>
     </html>
   );

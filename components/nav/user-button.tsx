@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { getUser, logout } from "@/actions/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -13,15 +15,14 @@ import {
 const UserButton = async () => {
   const userInfo = await getUser();
 
-  return (
+  return userInfo ? (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="flex h-12 items-center gap-3">
+        <Button variant="ghost" size="icon">
           <Avatar>
             <AvatarImage src={`${userInfo?.picture}`} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <div>{userInfo?.username}</div>
         </Button>
       </DropdownMenuTrigger>
       {userInfo && (
@@ -38,6 +39,8 @@ const UserButton = async () => {
         </DropdownMenuContent>
       )}
     </DropdownMenu>
+  ) : (
+    <Link href={"/login"}>Login</Link>
   );
 };
 

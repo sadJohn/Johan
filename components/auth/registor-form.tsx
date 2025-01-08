@@ -111,8 +111,8 @@ const RegistorForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={loading}>
-          Submit
+        <Button className="w-full" type="submit" disabled={loading}>
+          Register
         </Button>
       </form>
     </Form>
