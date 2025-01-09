@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import NavBar from "@/components/nav/nav-bar";
 import Provider from "@/components/provider";
 import { Toaster } from "@/components/ui/sonner";
+import { geistFont } from "@/lib/fonts";
 
 import "./globals.css";
 
@@ -19,7 +20,7 @@ export default function RootLayout({
   modal: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={geistFont.className} suppressHydrationWarning>
       <head>
         <link
           rel="icon"
