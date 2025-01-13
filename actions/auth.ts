@@ -3,86 +3,79 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { AUTH_MODE, BASE_URL, JOHAN_AUTH_SESSION } from "@/lib/constants";
-import { User } from "@/types";
+import api from "@/lib/api";
+import { AUTH_MODE, JOHAN_AUTH_SESSION } from "@/lib/constants";
+import {
+  getSessionCookie,
+  invalidateSession,
+  validateSessionToken,
+} from "@/lib/session";
+import { API_RETURN, User } from "@/types";
 
 export const register = async (user: User) => {
-  const res = await fetch(`${BASE_URL}/auth/register`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(user),
-  }).then((r) => r.json());
-  if (res) {
-    const session = res.session;
-    (await cookies()).set(JOHAN_AUTH_SESSION, session.sessionToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      expires: new Date(session.expiresAt),
-      path: "/",
-    });
-    redirect("/home");
-  }
+  const { data: userId } = await api
+    .post<API_RETURN<number>>("auth/register", { json: user })
+    .json();
+
+  const { sessionToken, session } = await getSessionCookie(userId);
+
+  (await cookies()).set(JOHAN_AUTH_SESSION, sessionToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    expires: new Date(session.expiresAt),
+    path: "/",
+  });
+
+  redirect("/home");
 };
 
 export const login = async (user: User & { mode: AUTH_MODE }) => {
-  const res = await fetch(`${BASE_URL}/auth/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(user),
-  }).then((r) => r.json());
-  if (res) {
-    const session = res.session;
-    (await cookies()).set(JOHAN_AUTH_SESSION, session.sessionToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      expires: new Date(session.expiresAt),
-      path: "/",
-    });
-    redirect("/home");
-  }
+  const { data: userId } = await api
+    .post<API_RETURN<number>>("auth/login", { json: user })
+    .json();
+
+  const { sessionToken, session } = await getSessionCookie(userId);
+
+  (await cookies()).set(JOHAN_AUTH_SESSION, sessionToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    expires: new Date(session.expiresAt),
+    path: "/",
+  });
+
+  redirect("/home");
 };
 
 export const getUser = async () => {
   const session = (await cookies()).get(JOHAN_AUTH_SESSION);
-  const result = await fetch(
-    `${BASE_URL}/auth/token?sessionId=${session?.value}`
-  ).then((res) => res.json());
-  return result.data as User | null;
+  if (!session?.value) {
+    return null;
+  }
+  const result = await validateSessionToken(session.value);
+  return result.user;
 };
 
 export const logout = async () => {
   const session = (await cookies()).get(JOHAN_AUTH_SESSION);
-  try {
-    const res = await fetch(
-      `${BASE_URL}/auth/logout?sessionId=${session?.value}`
-    );
-    if (res.ok) {
-      (await cookies()).set(JOHAN_AUTH_SESSION, "", {
-        httpOnly: true,
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 0,
-      });
-    }
-  } catch (error) {
-    console.log("logout: ", error);
-  }
-};
 
-export const oauthLogin = async (user: User & { mode: AUTH_MODE }) => {
-  const result = await fetch(`${BASE_URL}/auth/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(user),
-  }).then((res) => res.json());
-  return result.session;
+  const sessionId = session?.value;
+  if (!sessionId) {
+    return;
+  }
+
+  const result = await validateSessionToken(sessionId);
+  if (!result.session) {
+    return;
+  }
+  await invalidateSession(result.session.id);
+
+  (await cookies()).set(JOHAN_AUTH_SESSION, "", {
+    httpOnly: true,
+    path: "/",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 0,
+  });
 };

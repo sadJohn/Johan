@@ -1,14 +1,9 @@
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
 import type { OAuth2Tokens } from "arctic";
 
-import { oauthLogin } from "@/actions/auth";
-import {
-  AUTH_MODE,
-  GITHUB_AUTH_STATE,
-  JOHAN_AUTH_SESSION,
-} from "@/lib/constants";
+import { login } from "@/actions/auth";
+import { AUTH_MODE, GITHUB_AUTH_STATE } from "@/lib/constants";
 import { github } from "@/lib/oauth";
 import { User } from "@/types";
 
@@ -18,6 +13,7 @@ export async function GET(request: Request): Promise<Response> {
   const state = url.searchParams.get("state");
   const cookieStore = await cookies();
   const storedState = cookieStore.get(GITHUB_AUTH_STATE)?.value ?? null;
+
   if (code === null || state === null || storedState === null) {
     return new Response(null, {
       status: 400,
@@ -32,7 +28,8 @@ export async function GET(request: Request): Promise<Response> {
   let tokens: OAuth2Tokens;
   try {
     tokens = await github.validateAuthorizationCode(code);
-  } catch {
+  } catch (e) {
+    console.log("run...: ", e);
     return new Response(null, {
       status: 400,
     });
@@ -53,13 +50,9 @@ export async function GET(request: Request): Promise<Response> {
     githubId: githubUser.id,
   } as User;
 
-  const session = await oauthLogin({ ...user, mode: AUTH_MODE.GITHUB });
-  (await cookies()).set(JOHAN_AUTH_SESSION, session.sessionToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    expires: new Date(session.expiresAt),
-    path: "/",
+  await login({ ...user, mode: AUTH_MODE.GITHUB });
+
+  return new Response(null, {
+    status: 200,
   });
-  redirect(`/home`);
 }

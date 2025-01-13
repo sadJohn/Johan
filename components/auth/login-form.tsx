@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useTransition } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -34,16 +34,16 @@ const LoginForm = () => {
     },
   });
 
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setLoading(true);
-    await login({
-      mode: AUTH_MODE.EMAIL,
-      email: values.email,
-      password: values.password,
-    } as User & { mode: AUTH_MODE });
-    setLoading(false);
+    startTransition(async () => {
+      await login({
+        mode: AUTH_MODE.EMAIL,
+        email: values.email,
+        password: values.password,
+      } as User & { mode: AUTH_MODE });
+    });
   }
 
   return (
@@ -75,7 +75,7 @@ const LoginForm = () => {
             </FormItem>
           )}
         />
-        <Button className="w-full" type="submit" disabled={loading}>
+        <Button className="w-full" type="submit" disabled={isPending}>
           Login
         </Button>
       </form>

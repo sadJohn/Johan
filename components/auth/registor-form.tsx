@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useTransition } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -37,7 +37,7 @@ const RegistorForm = () => {
     },
   });
 
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (values.password !== values.confirmPassword) {
@@ -47,13 +47,14 @@ const RegistorForm = () => {
       });
       return;
     }
-    setLoading(true);
-    await register({
-      username: values.username,
-      email: values.email,
-      password: values.password,
-    } as User);
-    setLoading(false);
+
+    startTransition(async () => {
+      await register({
+        username: values.username,
+        email: values.email,
+        password: values.password,
+      } as User);
+    });
   }
 
   return (
@@ -111,7 +112,7 @@ const RegistorForm = () => {
             </FormItem>
           )}
         />
-        <Button className="w-full" type="submit" disabled={loading}>
+        <Button className="w-full" type="submit" disabled={isPending}>
           Register
         </Button>
       </form>

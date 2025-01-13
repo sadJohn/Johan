@@ -10,6 +10,12 @@ export type User = {
   updatedAt: Date;
 };
 
+export type Session = {
+  id: string;
+  userId: number;
+  expiresAt: Date;
+};
+
 type AgeStoreState = { userInfo: User | null };
 
 type AgeStoreActions = {
@@ -17,3 +23,8 @@ type AgeStoreActions = {
 };
 
 export type AgeStore = AgeStoreState & AgeStoreActions;
+
+export type API_RETURN<T> = {
+  message: string;
+  data: T;
+};
