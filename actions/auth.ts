@@ -13,11 +13,11 @@ import {
 import { API_RETURN, User } from "@/types";
 
 export const register = async (user: User) => {
-  const { data: userId } = await api
-    .post<API_RETURN<number>>("auth/register", { json: user })
+  const { data: newUser } = await api
+    .post<API_RETURN<User>>("auth/register", { json: user })
     .json();
 
-  const { sessionToken, session } = await getSessionCookie(userId);
+  const { sessionToken, session } = await getSessionCookie(newUser.id);
 
   (await cookies()).set(JOHAN_AUTH_SESSION, sessionToken, {
     httpOnly: true,
@@ -27,15 +27,15 @@ export const register = async (user: User) => {
     path: "/",
   });
 
-  redirect("/home");
+  return newUser;
 };
 
 export const login = async (user: User & { mode: AUTH_MODE }) => {
-  const { data: userId } = await api
-    .post<API_RETURN<number>>("auth/login", { json: user })
+  const { data: newUser } = await api
+    .post<API_RETURN<User>>("auth/login", { json: user })
     .json();
 
-  const { sessionToken, session } = await getSessionCookie(userId);
+  const { sessionToken, session } = await getSessionCookie(newUser.id);
 
   (await cookies()).set(JOHAN_AUTH_SESSION, sessionToken, {
     httpOnly: true,
@@ -45,7 +45,11 @@ export const login = async (user: User & { mode: AUTH_MODE }) => {
     path: "/",
   });
 
-  redirect("/home");
+  if (user.mode !== AUTH_MODE.EMAIL) {
+    redirect("/home");
+  }
+
+  return newUser;
 };
 
 export const getUser = async () => {

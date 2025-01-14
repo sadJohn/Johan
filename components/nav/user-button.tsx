@@ -1,17 +1,22 @@
+"use client";
+
 import Link from "next/link";
-import { ButtonHTMLAttributes } from "react";
+import { ButtonHTMLAttributes, useEffect } from "react";
 
 import clsx from "clsx";
 import { LucideLogOut, LucideUserRound } from "lucide-react";
+import { toast } from "sonner";
 
 import { getUser, logout } from "@/actions/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
+import useAppStore from "@/store";
 
 import {
   Drawer,
   DrawerClose,
   DrawerContent,
+  DrawerDescription,
   DrawerTitle,
   DrawerTrigger,
 } from "../ui/drawer";
@@ -39,8 +44,18 @@ const DrawerItem = ({
   );
 };
 
-const UserButton = async () => {
-  const userInfo = await getUser();
+const UserButton = () => {
+  const { userInfo, setUserInfo } = useAppStore((state) => ({
+    userInfo: state.userInfo,
+    setUserInfo: state.setUserInfo,
+  }));
+
+  console.log("userInfo: ", userInfo);
+  useEffect(() => {
+    getUser().then((res) => {
+      setUserInfo(res);
+    });
+  }, [setUserInfo]);
 
   return userInfo ? (
     <Drawer direction="right">
@@ -48,7 +63,9 @@ const UserButton = async () => {
         <Button variant="ghost" size="icon">
           <Avatar>
             <AvatarImage src={`${userInfo?.picture}`} />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarFallback>
+              <LucideUserRound />
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DrawerTrigger>
@@ -57,17 +74,31 @@ const UserButton = async () => {
           <DrawerTitle className="mt-6 flex flex-col items-center gap-3">
             <Avatar className="h-16 w-16">
               <AvatarImage src={`${userInfo?.picture}`} />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarFallback>
+                <LucideUserRound />
+              </AvatarFallback>
             </Avatar>
             <div className="text-xl">{userInfo.username}</div>
+            <DrawerDescription>Take care of yourself.</DrawerDescription>
           </DrawerTitle>
           <Separator className="my-3" />
           <DrawerItem>
             <LucideUserRound />
-            <Link href={"/profile"}> Profile</Link>
+            <Link href={"/profile"}>Profile</Link>
           </DrawerItem>
           <Separator className="my-3" />
-          <form action={logout}>
+          <form
+            action={async () => {
+              toast.promise(logout, {
+                loading: "See ....",
+                success: () => {
+                  setUserInfo(null);
+                  return `See you.`;
+                },
+                error: "Error",
+              });
+            }}
+          >
             <DrawerItem type="submit">
               <LucideLogOut className="h-4 w-4" />
               Log out

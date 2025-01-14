@@ -1,3 +1,3 @@
-# Next Start
+# Johan
 
-A basic Next.js starter with sensible defaults for eslint, prettier, typescript and vscode.
+A WebTech Playground.

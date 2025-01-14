@@ -3,6 +3,7 @@ import {
   encodeBase32LowerCaseNoPadding,
   encodeHexLowerCase,
 } from "@oslojs/encoding";
+import "server-only";
 
 import { API_RETURN, Session, User } from "@/types";
 

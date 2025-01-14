@@ -6,6 +6,7 @@ import AuthCard from "@/components/auth/auth-card";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -24,10 +25,11 @@ const LoginModal = () => {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Welcome</DialogTitle>
-          <div className="p-2">
-            <AuthCard />
-          </div>
+          <DialogDescription>Give me EVERYTHING!!!</DialogDescription>
         </DialogHeader>
+        <div className="p-2">
+          <AuthCard />
+        </div>
       </DialogContent>
     </Dialog>
   );

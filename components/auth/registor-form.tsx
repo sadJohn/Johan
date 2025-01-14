@@ -1,9 +1,11 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { register } from "@/actions/auth";
@@ -17,6 +19,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import useAppStore from "@/store";
 import { User } from "@/types";
 
 const formSchema = z.object({
@@ -37,6 +40,9 @@ const RegistorForm = () => {
     },
   });
 
+  const setUserInfo = useAppStore((state) => state.setUserInfo);
+  const router = useRouter();
+
   const [isPending, startTransition] = useTransition();
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -48,12 +54,23 @@ const RegistorForm = () => {
       return;
     }
 
-    startTransition(async () => {
-      await register({
-        username: values.username,
-        email: values.email,
-        password: values.password,
-      } as User);
+    startTransition(() => {
+      toast.promise(
+        register({
+          username: values.username,
+          email: values.email,
+          password: values.password,
+        } as User),
+        {
+          loading: "Where you ought to be...",
+          success: (user) => {
+            setUserInfo(user);
+            router.push("/home");
+            return `Gryffindor!`;
+          },
+          error: "Maybe next year...",
+        }
+      );
     });
   }
 
