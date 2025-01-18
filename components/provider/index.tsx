@@ -1,15 +1,11 @@
-import { ThemeProvider } from "./theme-provider";
+import { QueryProvider } from "./query";
+import { ThemeProvider } from "./theme";
 
 const Provider = ({ children }: { children: React.ReactNode }) => {
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="dark"
-      enableSystem
-      disableTransitionOnChange
-    >
-      {children}
-    </ThemeProvider>
+    <QueryProvider>
+      <ThemeProvider>{children}</ThemeProvider>
+    </QueryProvider>
   );
 };
 

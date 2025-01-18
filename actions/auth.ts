@@ -12,7 +12,7 @@ import {
 } from "@/lib/session";
 import { API_RETURN, User } from "@/types";
 
-export const register = async (user: User) => {
+export const registerAction = async (user: User) => {
   const { data: newUser } = await api
     .post<API_RETURN<User>>("auth/register", { json: user })
     .json();
@@ -30,7 +30,7 @@ export const register = async (user: User) => {
   return newUser;
 };
 
-export const login = async (user: User & { mode: AUTH_MODE }) => {
+export const loginAction = async (user: User & { mode: AUTH_MODE }) => {
   const { data: newUser } = await api
     .post<API_RETURN<User>>("auth/login", { json: user })
     .json();
@@ -52,7 +52,7 @@ export const login = async (user: User & { mode: AUTH_MODE }) => {
   return newUser;
 };
 
-export const getUser = async () => {
+export const getUserAction = async () => {
   const session = (await cookies()).get(JOHAN_AUTH_SESSION);
   if (!session?.value) {
     return null;
@@ -61,7 +61,7 @@ export const getUser = async () => {
   return result.user;
 };
 
-export const logout = async () => {
+export const logoutAction = async () => {
   const session = (await cookies()).get(JOHAN_AUTH_SESSION);
 
   const sessionId = session?.value;

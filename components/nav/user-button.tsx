@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { ButtonHTMLAttributes, useEffect } from "react";
+import { ButtonHTMLAttributes } from "react";
 
+import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 import { LucideLogOut, LucideUserRound } from "lucide-react";
 import { toast } from "sonner";
 
-import { getUser, logout } from "@/actions/auth";
+import { getUserAction, logoutAction } from "@/actions/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import useAppStore from "@/store";
@@ -45,19 +46,20 @@ const DrawerItem = ({
 };
 
 const UserButton = () => {
-  const { userInfo, setUserInfo } = useAppStore((state) => ({
-    userInfo: state.userInfo,
+  const { setUserInfo } = useAppStore((state) => ({
     setUserInfo: state.setUserInfo,
   }));
 
-  console.log("userInfo: ", userInfo);
-  useEffect(() => {
-    getUser().then((res) => {
-      setUserInfo(res);
-    });
-  }, [setUserInfo]);
+  const { data: userInfo, isPending } = useQuery({
+    queryKey: [getUserAction.name],
+    queryFn: async () => {
+      const user = await getUserAction();
+      setUserInfo(user);
+      return user;
+    },
+  });
 
-  return userInfo ? (
+  return userInfo || isPending ? (
     <Drawer direction="right">
       <DrawerTrigger asChild>
         <Button variant="ghost" size="icon">
@@ -89,7 +91,7 @@ const UserButton = () => {
           <Separator className="my-3" />
           <form
             action={async () => {
-              toast.promise(logout, {
+              toast.promise(logoutAction, {
                 loading: "See ....",
                 success: () => {
                   setUserInfo(null);

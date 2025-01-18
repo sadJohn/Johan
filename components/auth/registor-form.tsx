@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { register } from "@/actions/auth";
+import { registerAction } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -56,7 +56,7 @@ const RegistorForm = () => {
 
     startTransition(() => {
       toast.promise(
-        register({
+        registerAction({
           username: values.username,
           email: values.email,
           password: values.password,
@@ -130,7 +130,7 @@ const RegistorForm = () => {
           )}
         />
         <Button className="w-full" type="submit" disabled={isPending}>
-          Register
+          registerAction
         </Button>
       </form>
     </Form>

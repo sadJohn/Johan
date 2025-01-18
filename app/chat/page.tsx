@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { getUser } from "@/actions/auth";
+import { getUserAction } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import socket from "@/lib/socket";
 
@@ -54,7 +54,7 @@ const Chat = () => {
       >
         Send Message
       </Button>
-      <Button onClick={() => getUser()}>Get Message</Button>
+      <Button onClick={() => getUserAction()}>Get Message</Button>
     </div>
   );
 };

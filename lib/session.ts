@@ -8,6 +8,7 @@ import "server-only";
 import { API_RETURN, Session, User } from "@/types";
 
 import api from "./api";
+import { NEXT_TAG_SESSION } from "./constants";
 
 export function generateSessionToken(): string {
   const bytes = new Uint8Array(20);
@@ -42,7 +43,7 @@ export async function validateSessionToken(
   } = await api
     .get<
       API_RETURN<{ session: Session; user: User }>
-    >(`session/validate/${sessionId}`)
+    >(`session/validate/${sessionId}`, { next: { tags: [NEXT_TAG_SESSION] } })
     .json();
   return { session, user };
 }

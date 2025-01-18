@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { login } from "@/actions/auth";
+import { loginAction } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -45,7 +45,7 @@ const LoginForm = () => {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     startTransition(() => {
       toast.promise(
-        login({
+        loginAction({
           mode: AUTH_MODE.EMAIL,
           email: values.email,
           password: values.password,

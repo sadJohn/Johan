@@ -12,3 +12,5 @@ export enum AUTH_MODE {
   GITHUB = "github",
   GOOGLE = "google",
 }
+
+export const NEXT_TAG_SESSION = "session";

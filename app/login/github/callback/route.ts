@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 
 import type { OAuth2Tokens } from "arctic";
 
-import { login } from "@/actions/auth";
+import { loginAction } from "@/actions/auth";
 import { AUTH_MODE, GITHUB_AUTH_STATE } from "@/lib/constants";
 import { github } from "@/lib/oauth";
 import { User } from "@/types";
@@ -50,7 +50,7 @@ export async function GET(request: Request): Promise<Response> {
     githubId: githubUser.id,
   } as User;
 
-  await login({ ...user, mode: AUTH_MODE.GITHUB });
+  await loginAction({ ...user, mode: AUTH_MODE.GITHUB });
 
   return new Response(null, {
     status: 200,

@@ -3,12 +3,12 @@ import { redirect } from "next/navigation";
 import clsx from "clsx";
 import { LucideRedo } from "lucide-react";
 
-import { getUser } from "@/actions/auth";
+import { getUserAction } from "@/actions/auth";
 import AuthCard from "@/components/auth/auth-card";
 import { indieFlowerFont } from "@/lib/fonts";
 
 const Login = async () => {
-  const userInfo = await getUser();
+  const userInfo = await getUserAction();
   if (userInfo) {
     redirect("/home");
   }

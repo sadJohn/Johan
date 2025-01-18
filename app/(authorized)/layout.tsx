@@ -1,13 +1,13 @@
 import { redirect } from "next/navigation";
 
-import { getUser } from "@/actions/auth";
+import { getUserAction } from "@/actions/auth";
 
 export default async function AuthorizedLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const user = await getUser();
+  const user = await getUserAction();
   if (!user) {
     redirect("/login");
   }
