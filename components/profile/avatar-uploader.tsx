@@ -17,7 +17,8 @@ const AVATAR_SIZE = 200;
 
 const AvatarUploader = ({ src }: { src: string | null }) => {
   const queryClient = useQueryClient();
-  const [selectedAvater, setSelectedAvater] = useState("");
+
+  const [selectedAvatar, setSelectedAvatar] = useState("");
   const [open, setOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -81,7 +82,7 @@ const AvatarUploader = ({ src }: { src: string | null }) => {
                   }
                   return toast.warning("I'm sure you are bigger than that.");
                 }
-                setSelectedAvater(reader.result as string);
+                setSelectedAvatar(reader.result as string);
                 setOpen(true);
               };
             };
@@ -97,7 +98,7 @@ const AvatarUploader = ({ src }: { src: string | null }) => {
             }
             setOpen(o);
           }}
-          src={selectedAvater}
+          src={selectedAvatar}
           onImageCrop={onImageCrop}
           isPending={isPending}
         />

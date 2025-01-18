@@ -6,7 +6,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Big from "big.js";
 import clsx from "clsx";
 import * as motion from "motion/react-client";
-import "react-image-crop/dist/ReactCrop.css";
 
 import { Slider } from "@/components/ui/slider";
 
