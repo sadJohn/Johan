@@ -4,11 +4,12 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { loginAction } from "@/actions/auth";
+import { getUserAction, loginAction } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -37,6 +38,8 @@ const LoginForm = () => {
     },
   });
 
+  const queryClient = useQueryClient();
+
   const setUserInfo = useAppStore((state) => state.setUserInfo);
   const router = useRouter();
 
@@ -54,7 +57,9 @@ const LoginForm = () => {
           loading: "Where you ought to be...",
           success: (user) => {
             setUserInfo(user);
+            // 这两行先后顺序不能换
             router.push("/home");
+            queryClient.invalidateQueries({ queryKey: [getUserAction.name] });
             return `Gryffindor!`;
           },
           error: "Maybe next year...",

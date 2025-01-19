@@ -1,10 +1,15 @@
 "use server";
 
+import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import api from "@/lib/api";
-import { AUTH_MODE, JOHAN_AUTH_SESSION } from "@/lib/constants";
+import {
+  AUTH_MODE,
+  JOHAN_AUTH_SESSION,
+  NEXT_TAG_SESSION,
+} from "@/lib/constants";
 import {
   getSessionCookie,
   invalidateSession,
@@ -27,6 +32,8 @@ export const registerAction = async (user: User) => {
     path: "/",
   });
 
+  revalidateTag(NEXT_TAG_SESSION);
+
   return newUser;
 };
 
@@ -44,6 +51,8 @@ export const loginAction = async (user: User & { mode: AUTH_MODE }) => {
     expires: new Date(session.expiresAt),
     path: "/",
   });
+
+  revalidateTag(NEXT_TAG_SESSION);
 
   if (user.mode !== AUTH_MODE.EMAIL) {
     redirect("/home");
@@ -82,4 +91,6 @@ export const logoutAction = async () => {
     sameSite: "lax",
     maxAge: 0,
   });
+
+  revalidateTag(NEXT_TAG_SESSION);
 };

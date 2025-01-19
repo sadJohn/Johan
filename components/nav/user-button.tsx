@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ButtonHTMLAttributes } from "react";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import { LucideLogOut, LucideUserRound } from "lucide-react";
 import { toast } from "sonner";
@@ -50,6 +50,8 @@ const UserButton = () => {
     setUserInfo: state.setUserInfo,
   }));
 
+  const queryClient = useQueryClient();
+
   const { data: userInfo, isPending } = useQuery({
     queryKey: [getUserAction.name],
     queryFn: async () => {
@@ -95,6 +97,9 @@ const UserButton = () => {
                 loading: "See ....",
                 success: () => {
                   setUserInfo(null);
+                  queryClient.invalidateQueries({
+                    queryKey: [getUserAction.name],
+                  });
                   return `See you.`;
                 },
                 error: "Error",
