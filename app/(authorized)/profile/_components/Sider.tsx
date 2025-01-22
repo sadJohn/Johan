@@ -12,7 +12,7 @@ const Sider = async () => {
 
   return (
     <div className="mt-20 flex flex-col items-center gap-2">
-      <AvatarUploader src={user.picture} />
+      <AvatarUploader user={user} />
       <div className="text-lg">{user.username}</div>
       <div className="flex gap-2">
         <Button variant={"ghost"} asChild>

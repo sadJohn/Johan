@@ -3,19 +3,20 @@
 import { useRef, useState, useTransition } from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { LucideCamera, LucideUserRound } from "lucide-react";
+import { LucideCamera } from "lucide-react";
 import { toast } from "sonner";
 
 import { getUserAction } from "@/actions/auth";
 import { uploadAvatarAction } from "@/actions/profile";
+import { User } from "@/types";
 
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import ImageCropper from "./image-cropper";
+import UserAvatar from "./user-avatar";
 
 const AVATAR_SIZE = 200;
 
-const AvatarUploader = ({ src }: { src: string | null }) => {
+const AvatarUploader = ({ user }: { user: User }) => {
   const queryClient = useQueryClient();
 
   const [selectedAvatar, setSelectedAvatar] = useState("");
@@ -40,12 +41,7 @@ const AvatarUploader = ({ src }: { src: string | null }) => {
 
   return (
     <div className="relative">
-      <Avatar className="h-28 w-28">
-        <AvatarImage src={`${src}`} />
-        <AvatarFallback>
-          <LucideUserRound />
-        </AvatarFallback>
-      </Avatar>
+      <UserAvatar user={user} className="h-28 w-28" />
       <Button
         asChild
         variant="ghost"

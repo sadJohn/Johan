@@ -43,7 +43,7 @@ export async function validateSessionToken(
   } = await api
     .get<
       API_RETURN<{ session: Session; user: User }>
-    >(`session/validate/${sessionId}`, { next: { tags: [NEXT_TAG_SESSION] } })
+    >(`session/validate/${sessionId}`, { cache: "force-cache", next: { tags: [NEXT_TAG_SESSION] } })
     .json();
   return { session, user };
 }

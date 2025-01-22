@@ -9,15 +9,15 @@ const FollowTabs = () => {
   const pathname = usePathname();
 
   return (
-    <div className="flex gap-2">
+    <div className="mb-2 flex gap-2">
       <Button
-        variant={pathname === "/profile/followers" ? "default" : "ghost"}
+        variant={pathname.includes("/followers") ? "default" : "ghost"}
         asChild
       >
         <Link href={"/profile/followers"}>Followers</Link>
       </Button>
       <Button
-        variant={pathname === "/profile/following" ? "default" : "ghost"}
+        variant={pathname.includes("/following") ? "default" : "ghost"}
         asChild
       >
         <Link href={"/profile/following"}>Followering</Link>

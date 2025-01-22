@@ -9,10 +9,10 @@ import { LucideLogOut, LucideUserRound } from "lucide-react";
 import { toast } from "sonner";
 
 import { getUserAction, logoutAction } from "@/actions/auth";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import useAppStore from "@/store";
 
+import UserAvatar from "../profile/user-avatar";
 import {
   Drawer,
   DrawerClose,
@@ -65,23 +65,13 @@ const UserButton = () => {
     <Drawer direction="right">
       <DrawerTrigger asChild>
         <Button variant="ghost" size="icon">
-          <Avatar>
-            <AvatarImage src={`${userInfo?.picture}`} />
-            <AvatarFallback>
-              <LucideUserRound />
-            </AvatarFallback>
-          </Avatar>
+          <UserAvatar user={userInfo} />
         </Button>
       </DrawerTrigger>
       {userInfo && (
         <DrawerContent>
           <DrawerTitle className="mt-6 flex flex-col items-center gap-3">
-            <Avatar className="h-16 w-16">
-              <AvatarImage src={`${userInfo?.picture}`} />
-              <AvatarFallback>
-                <LucideUserRound />
-              </AvatarFallback>
-            </Avatar>
+            <UserAvatar user={userInfo} className="h-16 w-16" />
             <div className="text-xl">{userInfo.username}</div>
             <DrawerDescription>Take care of yourself.</DrawerDescription>
           </DrawerTitle>

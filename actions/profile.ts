@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 import api from "@/lib/api";
 import { NEXT_TAG_SESSION } from "@/lib/constants";
@@ -22,4 +22,36 @@ export const uploadAvatarAction = async (avatar: string) => {
   });
 
   revalidateTag(NEXT_TAG_SESSION);
+};
+
+export const followAction = async (followingId: number) => {
+  const user = await getUserAction();
+  if (!user) {
+    return;
+  }
+
+  await api.post("profile/following", {
+    json: {
+      userId: user.id,
+      followingId,
+    },
+  });
+
+  revalidatePath("/profile/followers");
+};
+
+export const unFollowAction = async (followingId: number) => {
+  const user = await getUserAction();
+  if (!user) {
+    return;
+  }
+
+  await api.delete("profile/following", {
+    json: {
+      userId: user.id,
+      followingId,
+    },
+  });
+
+  revalidatePath("/profile/following");
 };

@@ -9,7 +9,7 @@ export default async function AuthorizedLayout({
 }>) {
   const user = await getUserAction();
   if (!user) {
-    redirect("/login");
+    redirect("/home");
   }
   return <>{children}</>;
 }
