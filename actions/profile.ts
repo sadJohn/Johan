@@ -30,7 +30,7 @@ export const followAction = async (followingId: number) => {
     return;
   }
 
-  await api.post("profile/following", {
+  await api.post("profile/follow", {
     json: {
       userId: user.id,
       followingId,
@@ -38,6 +38,7 @@ export const followAction = async (followingId: number) => {
   });
 
   revalidatePath("/profile/followers");
+  revalidatePath("/profile/following");
 };
 
 export const unFollowAction = async (followingId: number) => {
@@ -46,12 +47,13 @@ export const unFollowAction = async (followingId: number) => {
     return;
   }
 
-  await api.delete("profile/following", {
+  await api.delete("profile/follow", {
     json: {
       userId: user.id,
       followingId,
     },
   });
 
+  revalidatePath("/profile/followers");
   revalidatePath("/profile/following");
 };
