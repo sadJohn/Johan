@@ -268,7 +268,7 @@ const ImageCropper = ({
               }
             }}
           >
-            <div className="absolute h-[252px] w-full border-background"></div>
+            <div className="border-background absolute h-[252px] w-full"></div>
             <MotionImage
               animate={{
                 scale,
@@ -324,7 +324,7 @@ const ImageCropper = ({
                 className={clsx(
                   "absolute box-content h-[200px] w-[200px] rounded-full border-[150px] border-black/50",
                   {
-                    "!border-background": maskCover,
+                    "border-background!": maskCover,
                   }
                 )}
               ></div>

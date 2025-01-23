@@ -37,7 +37,7 @@ const DrawerItem = ({
         buttonVariants({
           variant: "ghost",
         }),
-        "w-full !justify-start"
+        "w-full justify-start!"
       )}
     >
       {children}

@@ -10,7 +10,7 @@ export default async function AuthorizedLayout({
       <div className="flex-1 sm:max-w-96">
         <Sider />
       </div>
-      <div className="flex-[2]">{children}</div>
+      <div className="flex-2">{children}</div>
     </div>
   );
 }
