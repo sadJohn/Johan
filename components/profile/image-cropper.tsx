@@ -21,7 +21,6 @@ import {
 
 const MotionImage = motion.create(Image);
 
-const containerWidth = 400;
 const containerHeight = 252;
 const constraintsRadius = 100;
 
@@ -55,11 +54,13 @@ const ImageCropper = ({
   const [minScale, setMinScale] = useState(1);
 
   const constraints = useMemo(() => {
-    if (!imgRef.current) {
+    if (!imgRef.current || !container.current) {
       return false;
     }
+    const imgWidth = Big(imgRef.current.width);
     const imgHeight = Big(imgRef.current.height);
-    const baseX = Big(containerWidth).div(2).minus(Big(constraintsRadius));
+
+    const baseX = imgWidth.div(2).minus(Big(constraintsRadius));
     const baseBottom = Big(containerHeight)
       .div(2)
       .minus(Big(constraintsRadius));
@@ -79,11 +80,11 @@ const ImageCropper = ({
   // 裁剪预览
   useEffect(() => {
     const onMouseMove = (e: MouseEvent) => {
-      const { left, top } = container.current!.getBoundingClientRect();
+      const { left, top, width } = container.current!.getBoundingClientRect();
 
       if (
         e.clientX > left &&
-        e.clientX < left + containerWidth &&
+        e.clientX < left + width &&
         e.clientY > top &&
         e.clientY < top + containerHeight
       ) {
@@ -97,11 +98,11 @@ const ImageCropper = ({
     };
     const onMouseUp = (e: MouseEvent) => {
       mouseDown.current = false;
-      const { left, top } = container.current!.getBoundingClientRect();
+      const { left, top, width } = container.current!.getBoundingClientRect();
 
       if (
         e.clientX > left &&
-        e.clientX < left + containerWidth &&
+        e.clientX < left + width &&
         e.clientY > top &&
         e.clientY < top + containerHeight
       ) {
@@ -121,8 +122,11 @@ const ImageCropper = ({
   }, []);
 
   const downScale = (nextScale: number) => {
-    const { top: cTop, left: cLeft } =
-      container.current!.getBoundingClientRect();
+    const {
+      top: cTop,
+      left: cLeft,
+      width: cWidth,
+    } = container.current!.getBoundingClientRect();
     const {
       top: imgTop,
       left: imgLeft,
@@ -151,7 +155,7 @@ const ImageCropper = ({
       .add(Big(containerHeight / 2))
       .minus(constraintsRadius);
     const circleLeft = Big(cLeft)
-      .add(Big(containerWidth / 2))
+      .add(Big(cWidth / 2))
       .minus(constraintsRadius);
     const circleRight = circleLeft.add(constraintsRadius * 2);
     const circleBottom = circleTop.add(constraintsRadius * 2);
@@ -207,7 +211,7 @@ const ImageCropper = ({
       throw new Error("No 2d context");
     }
 
-    const { left, top } = container.current!.getBoundingClientRect();
+    const { left, top, width } = container.current!.getBoundingClientRect();
     const { left: iLeft, top: iTop } = image.getBoundingClientRect();
 
     const scaleX = image.naturalWidth / (image.width * scale);
@@ -218,7 +222,7 @@ const ImageCropper = ({
 
     ctx.drawImage(
       image,
-      (left + containerWidth / 2 - constraintsRadius - iLeft) * scaleX,
+      (left + width / 2 - constraintsRadius - iLeft) * scaleX,
       (top + containerHeight / 2 - constraintsRadius - iTop) * scaleY,
       constraintsRadius * 2 * scaleX,
       constraintsRadius * 2 * scaleY,
@@ -248,7 +252,7 @@ const ImageCropper = ({
         <div className="flex justify-center">
           <div
             ref={container}
-            className="relative flex h-[252px] w-[400px] justify-center overflow-hidden rounded-xl"
+            className="relative flex h-[252px] w-full max-w-[400px] justify-center overflow-hidden rounded-xl"
             onWheel={(e) => {
               if (e.deltaY > 0) {
                 downScale(Big(scale).minus(Big(e.deltaY).div(1000)).toNumber());
@@ -264,7 +268,7 @@ const ImageCropper = ({
               }
             }}
           >
-            <div className="absolute h-[252px] w-[400px] border-background"></div>
+            <div className="absolute h-[252px] w-full border-background"></div>
             <MotionImage
               animate={{
                 scale,
@@ -274,7 +278,7 @@ const ImageCropper = ({
                 },
               }}
               ref={imgRef}
-              className="absolute w-[400px] cursor-move"
+              className="absolute w-full cursor-move"
               drag
               dragConstraints={constraints}
               dragElastic={0}
@@ -315,7 +319,7 @@ const ImageCropper = ({
                 });
               }}
             />
-            <div className="pointer-events-none absolute flex h-[252px] w-[400px] items-center justify-center">
+            <div className="pointer-events-none absolute flex h-[252px] w-full items-center justify-center">
               <div
                 className={clsx(
                   "absolute box-content h-[200px] w-[200px] rounded-full border-[150px] border-black/50",
