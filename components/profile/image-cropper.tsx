@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import Big from "big.js";
 import clsx from "clsx";
-import * as motion from "motion/react-client";
+import { motion } from "motion/react";
 
 import { Slider } from "@/components/ui/slider";
 
@@ -322,7 +322,7 @@ const ImageCropper = ({
             <div className="pointer-events-none absolute flex h-[252px] w-full items-center justify-center">
               <div
                 className={clsx(
-                  "absolute box-content h-[200px] w-[200px] rounded-full border-[150px] border-black/50",
+                  "absolute box-content h-[200px] w-[200px] rounded-full border-150 border-black/50",
                   {
                     "border-background!": maskCover,
                   }

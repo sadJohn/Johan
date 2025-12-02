@@ -21,7 +21,7 @@ export const uploadAvatarAction = async (avatar: string) => {
     },
   });
 
-  revalidateTag(NEXT_TAG_SESSION);
+  revalidateTag(NEXT_TAG_SESSION, "max");
 };
 
 export const followAction = async (followingId: number) => {

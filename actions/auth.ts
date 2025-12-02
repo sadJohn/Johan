@@ -32,7 +32,7 @@ export const registerAction = async (user: User) => {
     path: "/",
   });
 
-  revalidateTag(NEXT_TAG_SESSION);
+  revalidateTag(NEXT_TAG_SESSION, "max");
 
   return newUser;
 };
@@ -52,7 +52,7 @@ export const loginAction = async (user: User & { mode: AUTH_MODE }) => {
     path: "/",
   });
 
-  revalidateTag(NEXT_TAG_SESSION);
+  revalidateTag(NEXT_TAG_SESSION, "max");
 
   if (user.mode !== AUTH_MODE.EMAIL) {
     redirect("/home");
@@ -92,5 +92,5 @@ export const logoutAction = async () => {
     maxAge: 0,
   });
 
-  revalidateTag(NEXT_TAG_SESSION);
+  revalidateTag(NEXT_TAG_SESSION, "max");
 };
