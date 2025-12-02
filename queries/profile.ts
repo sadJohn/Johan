@@ -1,5 +1,3 @@
-import queryString from "query-string";
-
 import api from "@/lib/api";
 import { API_RETURN, FolloweringSearch, FollowersSearch, User } from "@/types";
 
@@ -25,7 +23,7 @@ export const getFollowersList = async (
   const { data } = await api
     .get<
       API_RETURN<User[]>
-    >(`profile/followers/${userId}?${queryString.stringify(search)}`, { cache: "force-cache" })
+    >(`profile/followers/${userId}`, { cache: "force-cache", searchParams: search })
     .json();
 
   return data;
@@ -38,7 +36,7 @@ export const getFolloweringList = async (
   const { data } = await api
     .get<
       API_RETURN<User[]>
-    >(`profile/following/${userId}?${queryString.stringify(search)}`, { cache: "force-cache" })
+    >(`profile/following/${userId}`, { cache: "force-cache", searchParams: search })
     .json();
 
   return data;

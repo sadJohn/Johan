@@ -6,7 +6,6 @@ import { useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 
 import { registerAction } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
@@ -20,18 +19,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import useAppStore from "@/store";
-import { User } from "@/types";
-
-const formSchema = z.object({
-  username: z.string().min(2).max(20),
-  email: z.string().email(),
-  password: z.string().min(8).max(20),
-  confirmPassword: z.string().min(8).max(20),
-});
+import {
+  CreateUserForm,
+  CreateUserFormSchema,
+  CreateUserSchema,
+} from "@/types";
 
 const RegistorForm = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<CreateUserForm>({
+    resolver: zodResolver(CreateUserFormSchema),
     defaultValues: {
       username: "",
       email: "",
@@ -45,7 +41,7 @@ const RegistorForm = () => {
 
   const [isPending, startTransition] = useTransition();
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: CreateUserForm) {
     if (values.password !== values.confirmPassword) {
       form.setError("confirmPassword", {
         type: "manual",
@@ -55,22 +51,15 @@ const RegistorForm = () => {
     }
 
     startTransition(() => {
-      toast.promise(
-        registerAction({
-          username: values.username,
-          email: values.email,
-          password: values.password,
-        } as User),
-        {
-          loading: "Where you ought to be...",
-          success: (user) => {
-            setUserInfo(user);
-            router.push("/home");
-            return `Gryffindor!`;
-          },
-          error: "Maybe next year...",
-        }
-      );
+      toast.promise(registerAction(CreateUserSchema.parse(values)), {
+        loading: "Where you ought to be...",
+        success: (user) => {
+          setUserInfo(user);
+          router.push("/home");
+          return `Gryffindor!`;
+        },
+        error: "Maybe next year...",
+      });
     });
   }
 

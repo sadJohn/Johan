@@ -15,9 +15,9 @@ import {
   invalidateSession,
   validateSessionToken,
 } from "@/lib/session";
-import { API_RETURN, User } from "@/types";
+import { API_RETURN, CreateUser, LoginUser, User } from "@/types";
 
-export const registerAction = async (user: User) => {
+export const registerAction = async (user: CreateUser) => {
   const { data: newUser } = await api
     .post<API_RETURN<User>>("auth/register", { json: user })
     .json();
@@ -37,7 +37,7 @@ export const registerAction = async (user: User) => {
   return newUser;
 };
 
-export const loginAction = async (user: User & { mode: AUTH_MODE }) => {
+export const loginAction = async (user: LoginUser) => {
   const { data: newUser } = await api
     .post<API_RETURN<User>>("auth/login", { json: user })
     .json();

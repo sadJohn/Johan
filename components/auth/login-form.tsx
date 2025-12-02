@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 
 import { getUserAction, loginAction } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
@@ -22,16 +21,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { AUTH_MODE } from "@/lib/constants";
 import useAppStore from "@/store";
-import { User } from "@/types";
-
-const formSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8).max(20),
-});
+import { EmailLogin, EmailLoginSchema } from "@/types";
 
 const LoginForm = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<EmailLogin>({
+    resolver: zodResolver(EmailLoginSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -45,14 +39,12 @@ const LoginForm = () => {
 
   const [isPending, startTransition] = useTransition();
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: EmailLogin) {
     startTransition(() => {
       toast.promise(
-        loginAction({
-          mode: AUTH_MODE.EMAIL,
-          email: values.email,
-          password: values.password,
-        } as User & { mode: AUTH_MODE }),
+        loginAction(
+          EmailLoginSchema.parse({ ...values, mode: AUTH_MODE.EMAIL })
+        ),
         {
           loading: "Where you ought to be...",
           success: (user) => {
